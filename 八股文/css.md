@@ -66,3 +66,31 @@
         2、relative 不脱离文档流，position会脱离文档流；
         3、relative 如果有 left、top、right、bottom ===> left、top
         absolute 如果有 left、top、right、bottom ===> left、top、right、bottom
+
+7、自适应布局
+    淘宝自适应布局 + rem
+
+8、响应式
+    是让一个URL可以响应多端；
+    @media only screen and (max-width: 1000px) {
+        ...
+    }
+    only: 可以排除不支持媒体查询的浏览器
+    screen: 设备类型
+    响应式图片【性能优化】：
+        <picture>
+            <source srcset="large.jpg" media="(min-width: 1000px)" />
+            <source srcset="middle.jpg" media="(min-width: 750px)" />
+            <img srcset="base.jpg" />
+        </picture>
+        
+9、布局方案
+    什么时候采用响应式布局：
+        用户量不是特别多、数据量比较少、纯展会类项目；
+            例如公司官网、专题页面
+        特别追求性能的网站不适合使用响应式，因为如果添加了很多响应式就会造成加载速度变慢；
+    pc + 移动端应该做什么样的布局方案；
+        注意：访问量还可以或者比较大
+        
+        pc是一套，会加入一点点响应式。
+        移动端是一套，使用自适应布局；

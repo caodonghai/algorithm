@@ -9,16 +9,35 @@
 
 3、对数据类型的检测
     typeof
-    instanceof
+    instanceof【不能判断基本数据类型】
+        基本数据类型只有通过对应类型构造函数创建出来成对象形式，才会是对应类型构造函数实例（true），直接写基本数据类型值则不是（false）
     constroctor
+    obj.prototype.constructor.toString.call()
     Object.prototype.toString.call()
+    Object.protptype.getPrototypeOf()
 
 4、说一下原型链
+    解决的问题：对象共享属性和方法；、
+    谁有原型：
+        函数拥有：prototype；
+        对象拥有：__proto__;
+
     原型就是一个普通对象，是为构造函数的实例共享属性和方法，所有实例对象引用的原型都是同一个对象，使用 prototype.xxx可以把方法挂在原型上，内存值保存一份。
     实例对象 __proto__ 指向构造函数的原型对象 *.prototype
-    原型链就是 一个实例对象在调用属性、方法的时候，会依次从实例本身、构造函数原型、原型的原型去找的过程
+    原型链就是 一个实例对象在调用属性、方法的时候，会依次从实例本身、构造函数原型、原型的原型、...、null 去找的过程
     
 5、new 操作符做了什么
+    1、创建一个空对象；
+    2、将空对象的原型，指向构造函数的原型；
+    3、将空对象作为构造函数的上下文（改变this的指向）
+    4、判断构造函数返回值的数据类型，如果是基本数据类型，则直接忽略，如果是引用数据类型，则返回该对象；
+
+    function newFUn (Parent, ...args) {
+        let child = {}
+        child.__proto__ = Parent.protytype;
+        let result = Parent.apply(child, args)
+        return typeof result === 'object' ? retult : child;
+    }
 
 6、script标签的defer、async的作用及区别
     都用来延时加载js；只针对外部脚本有效；
@@ -181,3 +200,108 @@
             http:1.1：请求头：if-none-match 响应头：Etag
 
 23、大文件上传怎么做？
+
+24、null 和 undefined 的区别？
+    1、typeof 检测：null为对象，undefined 的为undefined；
+    2、null表示空数据，常用来释放对一个数据的引用，undefined代表的是数据定义后未赋值；
+    3、转为数值时，null为0，undefined 为NaN；
+
+24、'==' 和 '===' 的区别？
+    ‘==’：比较的是原始值：
+        string == number || boolen || ...都会做隐式转换
+        通过valueOf转换（valueOf()通常由js在后台自动调用，并不显示在代码中）
+    ‘===’：除了比较值，还比较类型：
+    【注：对于复杂数据类型，如果引用地址不同，那么比较都是false；】
+
+25：js的EventLoop?
+    1、js是单线程的语言
+    2、js代码执行流程：同步任务 => 事件循环[微任务、宏任务] => 微任务 => 宏任务 => 微任务 => ...
+        先执行同步任务，同步任务执行完了才进入事件循环；
+        微任务：Promise.then、progress.nextTick
+        宏任务：setTimeour、setInterval、IO操作
+
+26、作用域考题？
+    1、js除了函数，没有块级作用域；
+    2、作用域链：内部可以访问外部，外部不能访问内部；在找一个变量的时候根据当前执行上下文从当前作用域开始向外去找，一直到window对象为止；
+    3、let、const声明的变量具有暂时性死区
+    4、js在非严格模式下对 function、var声明的变量具有变量提升【变量悬挂声明】
+    5、函数声明会优先提升
+    6、优先级：声明变量 > 声明普通函数 > 参数 > 变量提升
+    面试的时候解题：
+        1、先看当前作用域是否有此变量【注意变量提升】
+        2、js除了函数没有块级作用域
+        3、普通函数声明是不看写函数的时候的顺序
+        function c() {
+            var a = 1;
+            function d() {
+                console.log(a) // undefined
+                var a = 2;
+                console.log(a) // 2
+            }
+            d() 
+            console.log(a) // 1
+        }
+        c()
+
+27、js对象考题
+    注意点：
+        js对象是通过new操作符构建出来的，所以对象之间不相等，除了引用同一个对象之外；
+        对象的key都是字符串类型
+        console.log([1] == [1]) // false
+        console.log({a:1} == {a:1}) // false
+
+28、闭包？
+    优点：
+        1、函数外部可以访问到函数内部定义的变量；
+        2、封装局部变量；节流、防抖；
+        3、结合自调用函数做数据隔离
+    缺点：
+        1、变量会留在内存中，造成内存损耗问题；
+            解决：把闭包函数值设置为null
+
+29、js继承的方式有哪些？
+    1、原型链继承
+        function Parent() {
+            this.name = 'zhang'
+        }
+        function Child() {
+            this.age = 24
+        }
+        Child.prototype = new Parent()
+    2、class extends 继承
+        class Parent {
+            constructor() {
+                this.name = 'zhang'
+            }
+        }
+        class Child extends Parent {
+            constructor() {
+                super()
+                this.age = 24
+            }
+        }
+    3、借用构造函数继承【无法实现共享】
+        function Parent() {
+            this.name = 'zhang'
+        }
+        function Child() {
+            Parent.call(this)
+            this.age = 24
+        }
+    4、组合式继承
+        function Parent() {
+            this.name = 'zhang'
+        }
+        function Child() {
+            Parent.call(this)
+            this.age = 24
+        }
+        Child.prototype = new Parent()
+
+30、箭头函数和普通函数的区别？
+    1、this指向问题：
+        箭头函数中的this只在函数定义时就决定的，而且是不可修改的(call、apply、bind)；
+        箭头函数的this指向它在定义时外层第一个普通函数的this；
+    2、箭头函数不能作为构造函数使用；
+    3、箭头函数没有arguments；
+    4、箭头函数没有prototype

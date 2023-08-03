@@ -1,4 +1,9 @@
 1、v-if 和 v-show的区别
+    v-show：是display：none、block
+    v-if：是每次创建DOM节点；
+    使用场景：
+        1、初次加载v-if比v-show好，页面不会多加载盒子；
+        2、频繁切换使用v-show，减少页面开销；
 
 2、对MVVM的理解？
     是Modal-View-ViewModal的缩写，前端开发的架构模式；
@@ -12,12 +17,12 @@
         beforeCreat
             属性和方法都无法使用
         created
-            完成对实例数据的创建，完成对数据的观测，可以使用数据、修改数据，不会触发update，也不会更新视图
+            完成对实例数据的创建，完成对数据的观测，可以使用数据、修改数据，不会触发update，也不会更新视图，可以获取到this.$data；
     挂载
         beforeMount
             已经完成对模版的编译，虚拟DOM也完成创建，即将渲染，修改数据不会触发update；
         Mounted
-            把编译好的模版挂载到页面，可以发送异步请求，也可以获取DOM；
+            把编译好的模版挂载到页面，可以发送异步请求，也可以获取DOM；，可以获取到this.$el；
     更新
         beforeUpdate、
             组件数据更新之前调用，数据是新的，页面上的数据是旧的，组件即将更新
@@ -34,6 +39,15 @@
             组件激活时
         deactivited
             组件被销毁时
+
+    第一次进入会执行哪些生命周期？
+        beforeCreat、created、beforeMount、mounted、activited(使用了keep-alive)
+    第2次或第n次进入会执行哪些生命周期？
+        没有keep-alive：beforeCreat、created、beforeMount、mounted
+        使用keep-alive：activited
+    离开某组件时执行什么声明周期？
+        没有keep-alive：beforeDestory、destoried;
+        使用keep-alive：deactivited
 
 4、createed 和 mounted 请求数据有什么区别？
     creared：在渲染前调用
@@ -67,8 +81,10 @@
         .number：输入是数字或者转为数字
 
 6、keep-alive 是什么，怎么用？
-    是vue的一个内置组件，，包裹组建的时候会缓存不活跃的组件实例，而不是销毁它们；
+    是vue的一个内置组件，包裹组建的时候会缓存不活跃的组件实例，而不是销毁它们；
     作用：把组建切换的状态保存在内存里，防止重复渲染DOM。减少加载时间，提高性能；
+    使用场景：
+        首页进入到详情页，使用activited判断路由传递的数据和当前的数据有无变化，变化了就重新发起请求；
 
 7、vue路由的hash 和 history 模式有什么区别
     1、hash模式的路由上有#号，history模式没有；
@@ -78,13 +94,14 @@
     1、computed是计算属性，watch是监听，监听的是data中数据的变化；
     2、computed是支持缓存，依赖属性值发生变化，计算属性才会重新计算，否则使用缓存，watch不支持缓存；
     3、computed不支持异步，watch可以异步操作；
-    4、computed是第一次加载就监听，watch是不监听；
+    4、computed是第一次加载就执行，watch是当前监听的数据或路由发生了改变才会执行，第一次不执行；
     5、computed函数必须有return，watch不用
 
 9、vuex 是什么，有什么使用场景？
+    做数据状态管理
     state       存储变量
     getters     state的计算属性
-    mutations   提交更新数据的方法
+    mutations   提交更新数据的方法，都是同步的事务；
     actions     和mutations差不多，它是提交mutations来修改数据，可以包括异步操作
     modules     模块化vuex
 
@@ -110,6 +127,7 @@
     vuex的state是响应式的，借助vue的就是vue的data；把state存到vue实例的组件之中；
 
 12、了解diff算法和虚拟DOM吗？
+
 
 13、如何搭建一个脚手架
     下载：node cnpm webpack vue-cli
@@ -163,3 +181,54 @@
             2、可以提高加载时间
     SEO：
     SPA的使用不利于搜索引擎SEO的操作；
+
+18、ref是什么？
+    来获取DOM；
+
+19、nextTick是什么？
+    DOM 的更新是异步的；用来获取更新后的DOM；
+    使用：
+        this.$nextTick(() => {})
+
+20、scoped原理？
+    1、作用：让样式在本组件生效，不影响其他组件；
+    2、原理：给元素的节点新增data-v-xxx属性，然后css根据属性选择器添加样式；
+
+21、如何使用saas？
+    1、下载：npm install sass-loader node-sass --save
+    2、使用：<style lang="sass" scoped></ style>
+    3、样式穿透：
+        .父元素 /deep/ .子元素 {}
+
+22、组件之间的通信？
+    1、父 ---> 子
+        父组件：<Child :msg="msg" />
+        子组件：使用props接收
+            props: ['mas']
+            props: {
+                msh: 数据类型；
+            }
+    1、子 ---> 父
+        父组件：<Child @childChange="getChildValue" />
+        子组件：
+            this.$emit('childChange', data)
+                childChange——自定义事件名称
+                data——传递的数据
+    1、兄弟之间
+        通过一个中转实现bus：
+            import Vue from 'vue';
+            export default new Vue;
+        A兄弟组件传值：
+            import bus from 'bus'
+            bus.$emit('toBcom', data)
+        B兄弟组件接收：
+            import bus from 'bus'
+            bus.$on('toBcom', (data) => {
+                // data 就是传过来的数据
+            })
+
+23、props、data优先级
+    props ===> methods ===> data ===> computed ===> watch 
+
+24、vue打包后出现空白页？
+    配置publicPath
