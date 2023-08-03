@@ -15,3 +15,4 @@ newClass.prototype.removeName = function removeName() {
 }
 
 const a = new newClass('lihua')
+
