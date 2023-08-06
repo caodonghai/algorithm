@@ -110,19 +110,19 @@
         2、购物车
         3、订单模块
 
-10、vue的双向绑定原理？
+10、vue2.0的双向绑定原理？
     通过数据劫持和发布订阅模式来实现，同时利用Object.definProperty()来劫持各个属性的setter和getter，在数据发生变化的时候发布消息给订阅者，触发对应的监听回调渲染视图，也就是说数据和视图是同步的，数据发生改变，视图会跟着更新，视图发生改变，数据也会跟着更新；
     实现原理：
         1、需要Observer对数据对象进行递归遍历，包括子属性对象的属性，都加上setter、getter；
         2、Complie 模版解析指令，把模版中的变量替换成数据，然后初始化渲染视图，同时把每个指令对应的节点绑定上对应的更新函数，添加订阅者，如果数据变化，收到通知，更新视图。
-        3、Watcher订阅者是Observer和Complie之间的通信桥梁，作用：
+        3、Watcher 订阅者是 Observer 和 Complie 之间的通信桥梁，作用：
             在自身实例化的时候往订阅器内添加自己；
             自身要有一个update方法等待属性变动时，调用自身的update方法，触发Complie的回调
         4、MVVM作为数据绑定的入口，整合了Observer、Complie、Watcher三者，通过Observer来监听自己的数据变化，通过Complie解析模版指令，最后使用Watcher把Observer和Complie联系起来，最终达到数据更新视图更新、视图更新数据更新的效果；
 
-11、vuex的响应式处理？
+11、vuex 的响应式处理？
     是一种状态管理工具；
-    vue中可以直接触发methods中的方法，vuex是不可以的，为了处理异步，当触发事件的时候，会通过dispach触发actions中的方法，actions中的commit会触发mutations中的方法来修改state里的数据，通过getter把数据更新到视图；
+    vue中可以直接触发 methods 中的方法，vuex 是不可以的，为了处理异步，当触发事件的时候，会通过 dispach 触发 actions 中的方法，actions中的commit会触发mutations中的方法来修改state里的数据，通过getter把数据更新到视图；
     vue.use(vues), 调用install方法，通过applyMixin(vue)在任意组建内执行this.$store就可以访问store对象。
     vuex的state是响应式的，借助vue的就是vue的data；把state存到vue实例的组件之中；
 
@@ -232,3 +232,72 @@
 
 24、vue打包后出现空白页？
     配置publicPath
+
+25、vue 路由传值？
+    1、显示：
+        传递：
+            this.$router.push({
+                path: '/about',
+                query: {
+                    a: 1
+                }
+            })
+        接收：
+            this.$router.query.id;
+
+    2、隐式：
+        传递：
+            this.$router.push({
+                name: 'About',
+                params: {
+                    a: 1
+                }
+            })
+        接收：
+            this.$router.params.id;
+
+26、路由导航守卫有哪些？
+     1、全局
+        beforeEach((to, from, next) => {})
+        beforeResolve
+        afterEach
+     2、路由独享
+        beforeEnter
+     3、组价内；
+        beforeRouterEnter、beforeRouterUpdate、beforeRouterLeave
+
+    使用场景：
+        判断是否登陆，如果登陆就next()，否则跳转到登陆页面；
+
+27、diff算法的理解？
+    功能：提升性能；
+    虚拟DOM ===> 把DOM数据化
+    虚拟节点：
+        {
+            children: [],
+            data: {},
+            elm: div,
+            key: undefined,
+            sel: 'div',
+            text: '海绵宝宝',
+        }
+        对应真实节点为：<div>海绵宝宝</div>
+    新老节点替换规则：
+        1、如果新老节点不是同一个节点名称，直接暴力删除旧节点，创建新的节点；
+        2、做同级比较，忽略跨层级移动；
+        3、如果是相同类型节点：
+            3.1、新节点没有childeren，那就证明是文本节点，创建文本节点替换旧节点；
+            3.2、新节点有children，旧的没有，删除旧的，创建新的；
+            3.3、新节点有children，旧的有children(diff算法核心：使用key值比对)：
+                3.3.1、旧前 和 新前
+                    匹配：旧前指针++、新前指针++；
+                3.3.2、旧后 和 新后
+                    匹配：旧后指针--、新后指针--；
+                3.3.3、旧前 和 新后
+                    匹配：旧前指针++、新后指针--；
+                3.3.4、旧后 和 新前
+                    匹配：旧后指针--、新前指针++；
+                3.3.5、以上情况都不满足 ===> 查找
+                3.3.6、创建和删除
+
+        【注：为了提升性能，对列表节点一定要使用key，用来确认节点更改前后是不是同一个节点】

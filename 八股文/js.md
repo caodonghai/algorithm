@@ -12,7 +12,7 @@
     instanceof【不能判断基本数据类型】
         基本数据类型只有通过对应类型构造函数创建出来成对象形式，才会是对应类型构造函数实例（true），直接写基本数据类型值则不是（false）
     constroctor
-    obj.prototype.constructor.toString.call()
+    Object.prototype.constructor.toString.call()
     Object.prototype.toString.call()
     Object.protptype.getPrototypeOf()
 
@@ -139,7 +139,7 @@
 18、SVG 和 canvas 有什么区别，使用场景？
     区别：svg是基于XML语法格式的图像，是矢量图，放大不失真；svg是对图像形状的描述，本质是文本文件，体积小；
     应用：
-        svg可直接插入到页面中成为DOM的一部分，然后用ＪＳ和ＣＳＳ操作；＜svg＞＜／svg＞；
+        svg可直接插入到页面中成为DOM的一部分，然后用JS和CSS操作；＜svg＞＜／svg＞；
         svg可作为文件被引入：＜img src='*.svg' /＞
         svg可以转为base64引入页面；
 
@@ -305,3 +305,12 @@
     2、箭头函数不能作为构造函数使用；
     3、箭头函数没有arguments；
     4、箭头函数没有prototype
+
+31、Reflact是干什么的，有什么用？
+    1、Reflect对象是ES6中新增的内置对象，用于实现一些与对象相关的操作。它提供了一系列的静态方法，这些方法的行为与一些对象的默认行为相对应，比如get方法对应属性读取、set方法对应属性赋值、has方法对应in运算符等等。
+    2、https://blog.csdn.net/tyxjolin/article/details/130242737
+
+32、Promise内部的错误能被try、catch捕获到吗，为什么？
+    Promise 中可以使用 try catch 来捕获异步操作中的异常。但要注意，try catch 只能捕获同步代码中的异常，而异步操作中的异常是不能被直接捕获的。如果异步操作中抛出异常，可以通过在 Promise 的回调函数中进行 try catch 处理来捕获异常。
+    当在 async 函数中使用 await 语句后的 Promise 抛出错误时，可以使用 try 和 catch 语句来捕获错误。使用 try 和 catch 语句可以捕获在 async 函数中使用 await 语句后的 Promise 的错误。这与 JavaScript 的执行栈有关，因为 await 语句会暂停函数的执行，直到 Promise 被解决为止。
+        

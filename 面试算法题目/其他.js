@@ -29,6 +29,9 @@ function check(str) {
     return false
 }
 
+// test
 check('(){}')
 check('({{{[]}()}})')
 check('function fun () { let arr = []}')
+
+// 实现对一批请求的并发控制
