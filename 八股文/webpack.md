@@ -19,3 +19,6 @@
     1、plugin 通常是在 webpack 在打包的某个时间节点做一些操作，我们使用 plugin 的时候，一般都是 new Plugin() 这种形式使用，所以，首先应该明确的是， plugin 应该是一个类。
     2、plugin 类里面需要实现一个 apply 方法， webpack 打包时候，会调用 plugin 的 aplly 方法来执行 plugin 的逻辑，这个方法接受一个 compiler 作为参数，这个 compiler 是 webpack 实例；
     3、plugin的核心在于，apply方法执行时，可以操作webpack本次打包的各个时间节点（hooks，也就是生命周期勾子），在不同的时间节点做一些操作；
+
+5、webpack 做过什么配置？
+    
