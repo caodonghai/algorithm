@@ -79,7 +79,7 @@
     XmlhttpRequest
 
     var xhr = new XmlhttpRequest()
-    xhr.open('xxx.xxx.xom')
+    xhr.open(get, 'xxx.xxx.xom')
     xhr.send()
     
 12、get和post有什么区别？
@@ -115,7 +115,7 @@
             async、await是基于Generator的实现，包装一层自调用函数实现自执行；
             async、await同步书写，格式类似Generator，遇到await就等待返回结果后再执行后面的结果；
 
-15、浏览器的缓存
+15、浏览器的内部存储
     cookie
         兼容性好、请求头自动携带、存储量小、安全性差
     sessonstorage
@@ -133,18 +133,7 @@
         服务端收到后验证信息，验证成功后将通过加密手段对一些用户信息加密后生成一个token；把这个发送给客户端；
         客户端收到后存储在本地，以后每次请求都携带用于登陆信息认证
 
-17、输入以URL后会发生什么？
-
-
-18、SVG 和 canvas 有什么区别，使用场景？
-    区别：svg是基于XML语法格式的图像，是矢量图，放大不失真；svg是对图像形状的描述，本质是文本文件，体积小；
-    应用：
-        svg可直接插入到页面中成为DOM的一部分，然后用JS和CSS操作；＜svg＞＜／svg＞；
-        svg可作为文件被引入：＜img src='*.svg' /＞
-        svg可以转为base64引入页面；
-
-
-19、了解过JWT吗？
+17、了解过JWT吗？
     JSON Web Token 通过JSON形式作为web应用中的令牌，可以在各方之间安全的把信息作为JSON对象传输；
     信息传输、授权
     JWT 一般是这样一个字符串，分为三个部分，以 “.” 隔开：
@@ -167,6 +156,16 @@
         2、无法中途废弃。因为一旦签发了一个 jwt，在到期之前始终都是有效的，如果用户信息发生更新了，只能等旧的 jwt 过期后重新签发新的 jwt。
         3、续签问题。当签发的 jwt 保存在客户端，客户端一直在操作页面，按道理应该一直为客户端续长有效时间，否则当 jwt有效期到了就会导致用户需要重新登录。那么怎么为 jwt 续签呢？最简单粗暴就是每次签发新的 jwt，但是由于过于暴力，会影响性能。如果要优雅一点，又要引入 Redis 解决，但是这又把无状态的 jw t硬生生变成了有状态的，违背了初衷。
     详解：https://blog.csdn.net/weixin_45410366/article/details/125031959
+
+18、输入以URL后会发生什么？
+
+
+19、SVG 和 canvas 有什么区别，使用场景？
+    区别：svg是基于XML语法格式的图像，是矢量图，放大不失真；svg是对图像形状的描述，本质是文本文件，体积小；
+    应用：
+        svg可直接插入到页面中成为DOM的一部分，然后用JS和CSS操作；＜svg＞＜／svg＞；
+        svg可作为文件被引入：＜img src='*.svg' /＞
+        svg可以转为base64引入页面；
 
 20、npm底层环境是什么?
     组成：网站、注册表、命令行工具
@@ -268,7 +267,7 @@
             this.age = 24
         }
         Child.prototype = new Parent()
-    2、class extends 继承
+    2、使用 ES6 class extends 继承
         class Parent {
             constructor() {
                 this.name = 'zhang'
@@ -304,7 +303,7 @@
         箭头函数的this指向它在定义时外层第一个普通函数的this；
     2、箭头函数不能作为构造函数使用；
     3、箭头函数没有arguments；
-    4、箭头函数没有prototype
+    4、箭头函数没有prototype；
 
 31、Reflact是干什么的，有什么用？
     1、Reflect对象是ES6中新增的内置对象，用于实现一些与对象相关的操作。它提供了一系列的静态方法，这些方法的行为与一些对象的默认行为相对应，比如get方法对应属性读取、set方法对应属性赋值、has方法对应in运算符等等。
@@ -313,4 +312,4 @@
 32、Promise内部的错误能被try、catch捕获到吗，为什么？
     Promise 中可以使用 try catch 来捕获异步操作中的异常。但要注意，try catch 只能捕获同步代码中的异常，而异步操作中的异常是不能被直接捕获的。如果异步操作中抛出异常，可以通过在 Promise 的回调函数中进行 try catch 处理来捕获异常。
     当在 async 函数中使用 await 语句后的 Promise 抛出错误时，可以使用 try 和 catch 语句来捕获错误。使用 try 和 catch 语句可以捕获在 async 函数中使用 await 语句后的 Promise 的错误。这与 JavaScript 的执行栈有关，因为 await 语句会暂停函数的执行，直到 Promise 被解决为止。
-        
+
