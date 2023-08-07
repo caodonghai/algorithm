@@ -21,4 +21,34 @@
     3、plugin的核心在于，apply方法执行时，可以操作webpack本次打包的各个时间节点（hooks，也就是生命周期勾子），在不同的时间节点做一些操作；
 
 5、webpack 做过什么配置？
-    
+    1、入口文件：entry
+    2、出口文件：output
+    3、loader
+        style-loader、css-loader
+        less-loader、less
+        sass-loader、node-sass
+        postcss-loader、autoprefixer
+        file-loader
+    4、plugin
+        html-webpack-plugin：生成HTML
+        extra-text-webpack-plugin：提取分离css
+        mini-css-extract-plugin：压缩css
+        optimize-css-assets-webpack-plugin：压缩css
+        clean-webpack-plugin：清除文件
+        terser-webpack-plugin：压缩js代码
+    5、分包策略配置
+        optimization{
+            splitChunks: {
+                cacheGroups: {
+                    common: {},
+                    antd: {}
+                }
+            }
+        }
+    6、Source Map
+        开发环境：devtool 的值设置为 eval-source-map 或者 source-map
+        生产环境： 建议关闭 Source Map 或将 devtool 的值设置为 nosources-source-map 
+    7、热模块替换：
+        {
+            hot: true,
+        }

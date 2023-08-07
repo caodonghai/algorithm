@@ -32,4 +32,21 @@
     在没有props的情况下，可以不调用super()
 
 3、react Fiber 了解多少？
-    
+
+4、React的Diff算法？
+    1、根节点不同：删除重新创建
+    2、根节点相同：
+        比较他们的属性变化，更新属性；
+    3、同级多个节点的Diff：
+        用新集合中的节点去和老集合中的节点进行diff
+        diff结束后，如果新集合中还有未进行diff的节点，说明该节点是需要新增的，对该节点执行新增逻辑。
+        diff结束后，如果老集合中还有未进行diff的节点，说明该节点是需要删除的，对该节点执行删除逻辑。
+
+        diff过程：
+            index：新集合遍历下标
+            oldIndex：当前节点在老集合的下标
+            maxIndex：在新集合访问过的节点中，其在老集合的最大下标
+
+            当oldIndex > maxIndex 时：将oldIndex 赋值给maxIndex；
+            当oldIndex = maxIndex 时：不移动；
+            当oldIndex < maxIndex 时：将当前节点移动到index位置；
