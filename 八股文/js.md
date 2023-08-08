@@ -61,6 +61,17 @@
     setInterval为：10ms
 
 8、ES6 有哪些新特性
+    1、let、const
+    2、Promise
+    3、Generation
+    4、() => {}
+    5、String.includes()、Array.includes()、Array.flat()
+    6、解构赋值
+    7、class
+    8、for of
+    9、Proxy
+    10、Symble 判断是不是：typeof Symble === 'function' && Symble?.for
+    11、async、await
 
 9、如何实现一个深拷贝
     1、扩展运算符
@@ -97,10 +108,10 @@
     原型上有：then、catch、finally
     有三种状态：pending、fulfilled、reject
     状态改变只有两种状态：pending--->fulfilled、pending--->reject，一旦发生，状态就不会再变
-    内部维护两个异步队列，fulfilledList和rejectedList，在pending阶段将异步回调放入队列，在状态结果改变后分别执行队列里面的回调；
+    内部维护两个异步队列，fulfilledList  和rejectedList，在pending阶段将异步回调放入队列，在状态结果改变后分别执行队列里面的回调；
     原理：
         构造一个Promise实例，实例需要传递一个函数作为参数，该函数包含两个参数，一个为resolve函数，一个为reject函数；
-        在promise的then方法用于指定状态改变后的操作，resolve时执行第成功队列，reject时执行失败队列；
+        在promise的then方法用于指定状态改变后的操作，resolve时执行成功队列，reject时执行失败队列；
     缺点：
         一旦创建，就无法在中途取消；如果不设置回调，内部抛出的错误无法反馈到外部；如果处于pending状态时，无法得知目前在哪个阶段；
 
@@ -108,12 +119,32 @@
         相同点：
             都用于处理JS异步
             都是非阻塞性的
-            async、await时机遇Promise实现的
+            async、await 是 Promise实现的
         不同点：
-            Promise是返回对象，我们要有then、catch处理和捕获异常，支持链式调用；
+            Promise是返回对象，我们要用then、catch处理和捕获异常，支持链式调用；
             async、await是通过try、catch来捕获异常
             async、await是基于Generator的实现，包装一层自调用函数实现自执行；
             async、await同步书写，格式类似Generator，遇到await就等待返回结果后再执行后面的结果；
+
+            function autoGeneration(genFun) {
+                const nextFun = genFun()
+                function next() {
+                    const { value, done } = nextFun.next()
+                    console.log({value, done});
+                    if(done) {
+                        return value
+                    } else {
+                        if(value instanceof Function) {
+                            value(next)
+                        } else if(value instanceof Promise) {
+                            value.then(() => next())
+                        } else {
+                            next()
+                        }
+                    }
+                }
+                next()
+            }
 
 15、浏览器的内部存储
     cookie
@@ -206,10 +237,10 @@
     3、转为数值时，null为0，undefined 为NaN；
 
 24、'==' 和 '===' 的区别？
-    ‘==’：比较的是原始值：
+    '=='：比较的是原始值：
         string == number || boolen || ...都会做隐式转换
         通过valueOf转换（valueOf()通常由js在后台自动调用，并不显示在代码中）
-    ‘===’：除了比较值，还比较类型：
+    '==='：除了比较值，还比较类型：
     【注：对于复杂数据类型，如果引用地址不同，那么比较都是false；】
 
 25：js的EventLoop?
@@ -300,7 +331,7 @@
 30、箭头函数和普通函数的区别？
     1、this指向问题：
         箭头函数中的this只在函数定义时就决定的，而且是不可修改的(call、apply、bind)；
-        箭头函数的this指向它在定义时外层第一个普通函数的this；
+        箭头函数的this指向它在定义时外层第一个【普通函数的this】；
     2、箭头函数不能作为构造函数使用；
     3、箭头函数没有arguments；
     4、箭头函数没有prototype；

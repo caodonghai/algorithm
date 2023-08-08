@@ -1,4 +1,4 @@
-1、v-if 和 v-show的区别
+1、v-if 和 v-show 的区别
     v-show：是display：none、block
     v-if：是每次创建DOM节点；
     使用场景：
@@ -49,7 +49,7 @@
         没有keep-alive：beforeDestory、destoried;
         使用keep-alive：deactivited
 
-4、createed 和 mounted 请求数据有什么区别？
+4、created 和 mounted 请求数据有什么区别？
     creared：在渲染前调用
     mounted：在渲染后调用，会出现闪屏问题
     一般：
@@ -97,7 +97,17 @@
     4、computed是第一次加载就执行，watch是当前监听的数据或路由发生了改变才会执行，第一次不执行；
     5、computed函数必须有return，watch不用
 
-9、vuex 是什么，有什么使用场景？
+9、vue2.0的双向绑定原理？
+    通过数据劫持和发布订阅模式来实现，同时利用Object.definProperty()来劫持各个属性的setter和getter，在数据发生变化的时候发布消息给订阅者，触发对应的监听回调渲染视图，也就是说数据和视图是同步的，数据发生改变，视图会跟着更新，视图发生改变，数据也会跟着更新；
+    实现原理：
+        1、需要Observer对数据对象进行递归遍历，包括子属性对象的属性，都加上setter、getter；
+        2、Complie 模版解析指令，把模版中的变量替换成数据，然后初始化渲染视图，同时把每个指令对应的节点绑定上对应的更新函数，添加订阅者，如果数据变化，收到通知，更新视图。
+        3、Watcher 订阅者是 Observer 和 Complie 之间的通信桥梁，作用：
+            在自身实例化的时候往订阅器内添加自己；
+            自身要有一个update方法等待属性变动时，调用自身的update方法，触发Complie的回调
+        4、MVVM作为数据绑定的入口，整合了Observer、Complie、Watcher三者，通过Observer来监听自己的数据变化，通过Complie解析模版指令，最后使用Watcher把Observer和Complie联系起来，最终达到数据更新视图更新、视图更新数据更新的效果；
+
+10、vuex 是什么，有什么使用场景？
     做数据状态管理
     state       存储变量
     getters     state的计算属性
@@ -109,16 +119,6 @@
         1、用户个人信息
         2、购物车
         3、订单模块
-
-10、vue2.0的双向绑定原理？
-    通过数据劫持和发布订阅模式来实现，同时利用Object.definProperty()来劫持各个属性的setter和getter，在数据发生变化的时候发布消息给订阅者，触发对应的监听回调渲染视图，也就是说数据和视图是同步的，数据发生改变，视图会跟着更新，视图发生改变，数据也会跟着更新；
-    实现原理：
-        1、需要Observer对数据对象进行递归遍历，包括子属性对象的属性，都加上setter、getter；
-        2、Complie 模版解析指令，把模版中的变量替换成数据，然后初始化渲染视图，同时把每个指令对应的节点绑定上对应的更新函数，添加订阅者，如果数据变化，收到通知，更新视图。
-        3、Watcher 订阅者是 Observer 和 Complie 之间的通信桥梁，作用：
-            在自身实例化的时候往订阅器内添加自己；
-            自身要有一个update方法等待属性变动时，调用自身的update方法，触发Complie的回调
-        4、MVVM作为数据绑定的入口，整合了Observer、Complie、Watcher三者，通过Observer来监听自己的数据变化，通过Complie解析模版指令，最后使用Watcher把Observer和Complie联系起来，最终达到数据更新视图更新、视图更新数据更新的效果；
 
 11、vuex 的响应式处理？
     是一种状态管理工具；
@@ -301,3 +301,24 @@
                 3.3.6、创建和删除
 
         【注：为了提升性能，对列表节点一定要使用key，用来确认节点更改前后是不是同一个节点】
+
+28、Composition API 与 Options API 有什么区别？
+    在 Composition API 中，根据代码逻辑功能来组织的，一个功能所定义的所有 API 都会放到一起，这样即使功能复杂，代码量增大，都可以一下子定位到某个功能的所有代码，代码维护方便。它的最大特点就是：高内聚，低耦合。
+    1、生命周期：
+        beforeCreate===>setup()
+        created=======>setup()
+        beforeMount ===>onBeforeMount
+        mounted=======>onMounted
+        beforeUpdate===>onBeforeUpdate
+        updated =======>onUpdated
+        beforeUnmount ==>onBeforeUnmount
+        unmounted =====>onUnmounted
+
+29、watch 和 watchEffect 的区别？
+    1、watch 需要传入监听的数据源，而 watchEffect 可以自动手机数据源作为依赖。
+    2、watch 可以访问倒改变之前和之后的值，watchEffect 只能获取改变后的值。
+    3、watch 运行的时候不会立即执行，值改变后才会执行，而 watchEffect 运行后可立即执行。这一点可以通过 watch 的配置项 immediate 改变。
+
+30、v-for 和 v-if 优先级？
+    1.在vue2中，v-for的优先级高于v-if；
+    2.在vue3中，又恰好相反v-if的优先级是高于v-for的；
