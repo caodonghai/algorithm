@@ -322,3 +322,8 @@
 30、v-for 和 v-if 优先级？
     1.在vue2中，v-for的优先级高于v-if；
     2.在vue3中，又恰好相反v-if的优先级是高于v-for的；
+
+31、Vue Composition API 和 react Hooks 的区别？
+    1、原理上：react hooks 底层是基于链表实现的，当组件渲染时会顺序地执行所有的 hooks ，每个 hook 的 next 指向下一个 hook。vue hook 只会调用一次，原因在于它对数据的响应是基于 proxy 的，对数据直接代理观察，只要任何地方改动了 data，相关的 function/template 都会被重新计算。
+    2、代码执行：react hooks 是在每次组件渲染时运行，vue setup 只会在组件创建时运行一次；vue composition API 的 setup 晚于 beforecreate 早于 create 被调用
+    3、声明状态：react hooks 使用 useState hooks 来初始化状态，vue 声明状态主要是 ref 和 reactive，其中 ref 返回一个响应式对象，通过 value 属性访问到，可用于基本类型/对象。reactive 只将对象作为输入，并返回响应式代理（使用了对象解构会失去响应性）

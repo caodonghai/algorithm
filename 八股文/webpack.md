@@ -11,6 +11,7 @@
     Plugin：直译为插件。Plugin可以扩展webpack的功能，让webpack具有更多的灵活性。在 Webpack 运行的生命周期中会广播出许多事件，Plugin 可以监听这些事件，在合适的时机通过 Webpack 提供的 API 改变输出结果。
 
 3、如何实现一个loader？
+    执行顺序：在 webpack 中，loader 的执行顺序是从右到左、从下往上的。
     1、loader本质上就是一个函数，这个函数会在我们在我们加载一些文件时执行
     2、我们可以尝试在 loader 的函数里打印 this ，发现输出结果是非常长的一串内容， this 上有很多我们可以在 loader 中使用的有用信息，所以，对于 loader 的编写，一定不要使用箭头函数，那样会改变 this；
     3、使用官方推荐的 loader-utils 包去完成更加复杂的 loader 的编写
@@ -21,6 +22,7 @@
     3、plugin的核心在于，apply方法执行时，可以操作webpack本次打包的各个时间节点（hooks，也就是生命周期勾子），在不同的时间节点做一些操作；
 
 5、webpack 做过什么配置？
+    文档：https://blog.csdn.net/qq_25354709/article/details/87775425
     1、入口文件：entry
     2、出口文件：output
     3、loader
@@ -45,10 +47,16 @@
                 }
             }
         }
-    6、Source Map
+    6、多线程打包
+        happypack、hard-source-webpack-plugin、cache-loader
+    7、Source Map
         开发环境：devtool 的值设置为 eval-source-map 或者 source-map
         生产环境： 建议关闭 Source Map 或将 devtool 的值设置为 nosources-source-map 
-    7、热模块替换：
+    8、热模块替换：
         {
             hot: true,
         }
+
+6、webpack 缓存原理？
+    在 Webpack 中，缓存机制是通过文件名和哈希值来完成的。每个打包生成的文件都会添加一个哈希码，这个哈希码默认是生成的资源的内容（即使只是重新编译，文件内容也会略有改变）。然后，Webpack 会根据每个文件的哈希码生成对应的缓存文件，如果两次的哈希值相同，Webpack 就会认为它们是同一个文件，不会再次编译和打包，优化了编译和打包速度。
+    Webpack 4 中，开启持久缓存的方式非常简单，只需要在命令行参数里面加上 --cache 即可。
