@@ -15,6 +15,13 @@
     1、loader本质上就是一个函数，这个函数会在我们在我们加载一些文件时执行
     2、我们可以尝试在 loader 的函数里打印 this ，发现输出结果是非常长的一串内容， this 上有很多我们可以在 loader 中使用的有用信息，所以，对于 loader 的编写，一定不要使用箭头函数，那样会改变 this；
     3、使用官方推荐的 loader-utils 包去完成更加复杂的 loader 的编写
+    常用API：
+        1、this.async：获取一个callback函数，处理异步；
+        2、this.callback：同步loader中返回的方法
+        3、this.emitFile：产生一个文件；
+        4、this.getOptions：根据传入的schema获取对应的参数；
+        5、this.importModule：用于子编译器在构建时编译和执行请求；
+        6、this.resourcePach：当前资源文件的路径；
 
 4、如何实现一个plugin？
     1、plugin 通常是在 webpack 在打包的某个时间节点做一些操作，我们使用 plugin 的时候，一般都是 new Plugin() 这种形式使用，所以，首先应该明确的是， plugin 应该是一个类。

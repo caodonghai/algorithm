@@ -50,3 +50,11 @@
             当oldIndex > maxIndex 时：将oldIndex 赋值给maxIndex；
             当oldIndex = maxIndex 时：不移动；
             当oldIndex < maxIndex 时：将当前节点移动到index位置；
+
+5、react 项目性能优化？
+    1、将变的部分和不变的部分分离：
+        当父组件满足性能优化的条件时；子孙组件可能命中性能优化；
+    2、步骤：
+        1、寻找项目中的性能损耗严重的子树；
+        2、在子树的根节点使用性能优化API
+        3、子树中应用变与不变分离原则
