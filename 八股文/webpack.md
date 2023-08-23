@@ -67,3 +67,26 @@
 6、webpack 缓存原理？
     在 Webpack 中，缓存机制是通过文件名和哈希值来完成的。每个打包生成的文件都会添加一个哈希码，这个哈希码默认是生成的资源的内容（即使只是重新编译，文件内容也会略有改变）。然后，Webpack 会根据每个文件的哈希码生成对应的缓存文件，如果两次的哈希值相同，Webpack 就会认为它们是同一个文件，不会再次编译和打包，优化了编译和打包速度。
     Webpack 4 中，开启持久缓存的方式非常简单，只需要在命令行参数里面加上 --cache 即可。
+
+7、Babel相关polyfill的作用？
+    最新ES语法，比如：箭头函数，let/const。
+    最新ES Api，比如Promise
+    最新ES实例/静态方法，比如String.prototype.include
+
+    babel-prest-env仅仅只会转化最新的es语法，并不会转化对应的Api和实例方法,比如说ES 6中的Array.from静态方法。babel是不会转译这个方法的，如果想在低版本浏览器中识别并且运行Array.from方法达到我们的预期就需要额外引入polyfill进行在Array上添加实现这个方法。
+    
+    这里为列一份目前它的默认配置:
+    {
+        "plugins": [
+            [
+            "@babel/plugin-transform-runtime",
+            {
+                "absoluteRuntime": false,
+                "corejs": false,
+                "helpers": true,
+                "regenerator": true,
+                "version": "7.0.0-beta.0"
+            }
+            ]
+        ]
+    }
