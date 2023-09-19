@@ -62,7 +62,7 @@
     absolute：根据不是static定位以外的第一个祖先元素进行定位，脱离文档流
 
     relative 和 absolute的区别:
-        1、relative根据自身进行定位，absolute根据第一个部位 static 的祖先元素进行定位；
+        1、relative根据自身进行定位，absolute根据第一个不为 static 的祖先元素进行定位；
         2、relative 不脱离文档流，position会脱离文档流；
         3、relative 如果有 left、top、right、bottom ===> left、top
         absolute 如果有 left、top、right、bottom ===> left、top、right、bottom
