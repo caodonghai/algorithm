@@ -40,22 +40,105 @@
         file-loader
     4、plugin
         html-webpack-plugin：生成HTML
+            plugins: [
+                // 把./locale给忽略掉，不去查找
+                // 这样的话，打包后的话，语言包不会被打包
+                new webpack.IgnorePlugin(/\.\/locale/, /moment/),
+                new HtmlWebpackPlugin({
+                    // 选择哪个html文件作为打包的模板
+                    template: './public/index.html'
+                })
+            ]
         extra-text-webpack-plugin：提取分离css
         mini-css-extract-plugin：压缩css
         optimize-css-assets-webpack-plugin：压缩css
         clean-webpack-plugin：清除文件
         terser-webpack-plugin：压缩js代码
-    5、分包策略配置
-        optimization{
+    5、分包、抽离公共代码配置
+        // 抽离公共代码
+        optimization: {
+            // 分割代码块
             splitChunks: {
+                // 缓存组
                 cacheGroups: {
-                    common: {},
-                    antd: {}
+                    // 公共的模块
+                    common: {
+                        chunks: 'initial',
+                        // 超过0个字节被共用
+                        minSize: 0,
+                        // 只要用过2次以上，就抽离出来
+                        minChunks: 2
+                    },
+                    // 抽离第三方的插件，比如jquery
+                    vendor: {
+                        // 权重高一点。先抽离出jquery。
+                        priority:1,
+                        // 如果引用到了node_modules目录下的。
+                        // 就给抽离出来。
+                        test: /node_modules/,
+                        chunks: 'initial',
+                        // 超过0个字节被共用
+                        minSize: 0,
+                        // 只要用过2次以上，就抽离出来
+                        minChunks: 2
+                    }
                 }
             }
         }
+
     6、多线程打包
         happypack、hard-source-webpack-plugin、cache-loader
+        module: {
+            // ...
+            // 不去解析jquery的包
+            // 相当于jquery这个包不需要去解析
+            // noParse 的意思就是不去解析jquery中的依赖库。 可以提高打包的速度。
+            noParse: /jquery/,
+            rules: [
+                {
+                    // 匹配所有的js文件
+                    test: /\.js$/,
+                    // 排除node_modules， 不查找node_modules目录
+                    exclude: /node_modules/,
+                    // 只查找src目录
+                    include: path.resolve('src'),
+                    use: 'Happypack/loader?id=js',
+                },
+                // css文件也可以使用happypack进行打包。
+                {
+                    test: /\.css$/,
+                    // use: ['style-loader', 'css-loader']
+                    use: 'Happypack/loader?id=css'
+                }
+            ]
+            // ...
+        }
+        plugins: [
+            // ...
+            // 多线程打包css文件
+            new Happypack({
+                id: 'css',
+                use: ['style-loader', 'css-loader']
+            }),
+            // 打包js的时候，会使用Happypack进行打包。
+            new Happypack({
+                id: 'js',
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: [
+                                // 将ES6、7转换成ES5语法
+                                '@babel/preset-env',
+                                // 解析react语法
+                                '@babel/preset-react'
+                            ]
+                        }
+                    }
+                ]
+            })
+            // ...
+        ]
     7、Source Map
         开发环境：devtool 的值设置为 eval-source-map 或者 source-map
         生产环境： 建议关闭 Source Map 或将 devtool 的值设置为 nosources-source-map 
@@ -63,17 +146,49 @@
         {
             hot: true,
         }
+    9、懒加载js【比如页面有一个按钮，一点击的时候，才能加载某一段js。】
+        需要使用到一个插件 npm install @babel/plugin-syntax-dynamic-import -D
+        在rules中进行配置：
+        module: {
+            // ...
+            rules: [
+                {
+                    // 匹配所有的js文件
+                    test: /\.js$/,
+                    // 排除node_modules， 不查找node_modules目录
+                    exclude: /node_modules/,
+                    // 只查找src目录
+                    include: path.resolve('src'),
+                    use: {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: [
+                                '@babel/preset-env',
+                                '@babel/preset-react'
+                            ],
+                            plugins: [
+                                '@babel/plugin-syntax-dynamic-import'
+                            ]
+                        }
+                    }
+                },
+            ]
+        },
+
+    10、webpack4 自带优化
+        一个叫 tree-shaking， 在生产环境下，打包时，会自动去除掉没有用到的代码。
+        一个叫 scope hosting， 作用域提升。 
 
 6、webpack 缓存原理？
     在 Webpack 中，缓存机制是通过文件名和哈希值来完成的。每个打包生成的文件都会添加一个哈希码，这个哈希码默认是生成的资源的内容（即使只是重新编译，文件内容也会略有改变）。然后，Webpack 会根据每个文件的哈希码生成对应的缓存文件，如果两次的哈希值相同，Webpack 就会认为它们是同一个文件，不会再次编译和打包，优化了编译和打包速度。
     Webpack 4 中，开启持久缓存的方式非常简单，只需要在命令行参数里面加上 --cache 即可。
 
-7、Babel相关polyfill的作用？
+7、Babel相关 polyfill 的作用？
     最新ES语法，比如：箭头函数，let/const。
     最新ES Api，比如Promise
     最新ES实例/静态方法，比如String.prototype.include
 
-    babel-prest-env仅仅只会转化最新的es语法，并不会转化对应的Api和实例方法,比如说ES 6中的Array.from静态方法。babel是不会转译这个方法的，如果想在低版本浏览器中识别并且运行Array.from方法达到我们的预期就需要额外引入polyfill进行在Array上添加实现这个方法。
+    babel-prest-env 仅仅只会转化最新的es语法，并不会转化对应的 ES-Api 和实例方法,比如说 ES6中 的 Array.from 静态方法。babel 是不会转译这个方法的，如果想在低版本浏览器中识别并且运行 Array.from 方法达到我们的预期就需要额外引入 polyfill 进行在 Array 上添加实现这个方法。
     
     这里为列一份目前它的默认配置:
     {
