@@ -4,8 +4,15 @@
 
 2、JS由哪三部分组成
     ES
-    DOM
-    BOM
+    DOM（即文档对象模型）：
+        针对HTML和XML文档的一个API，允许开发人员添加、移除和修改页面的某一部分。
+        （1）DOM定义了访问诸如 XML 和 XHTML 文档的标准，是一个使程序和脚本有能力动态地访问和更新文档的内容、结构以及样式的平台和语言中立的接口。
+        （2）组成：XML、HTML
+        （3）主要对象：XML DOM Document、XML DOM Node、XML DOM NodeList、 XML DOM NamedNodeMap
+    BOM（览器对象模型）：
+        这个对象就是对应着浏览器窗口window，它提供了一些方法用于访问浏览器的功能，这些功能和网页内容无关。
+        （1）组成：window对象、局作用域、alert、location对象、navigator对象、history对象
+
 
 3、对数据类型的检测
     typeof
@@ -45,10 +52,10 @@
         1、defer：下载和html解析同步，但是要等到html文档完全被解析和显示，才会执行脚本的代码；顺次执行JS脚本；
         2、async：下载和html解析并行，不是顺次执行JS脚本；
 
-    async：可选。表示应该立即下载脚本，但不应妨碍页面中的其他操作，比如下载其他资源或 等待加载其他脚本。只对外部脚本文件有效。
-    这个属性的用途是表明脚本在执行时不会影响页面的构造。也就是说，脚本会被延迟到整个页面都解析完毕后再运行。因此，在</script>元素中设置defer 属性，相当于告诉浏览器立即下载，但延迟执行。
+    defer：可选。表示应该立即下载脚本，但不应妨碍页面中的其他操作，比如下载其他资源或 等待加载其他脚本。只对外部脚本文件有效。
+    这个属性的用途是表明脚本在执行时不会影响页面的构建。也就是说，脚本会被延迟到整个页面都解析完毕后再运行。因此，在</script>元素中设置 defer 属性，相当于告诉浏览器立即下载，但延迟执行。
 
-    defer：可选。表示脚本可以延迟到文档完全被解析和显示之后再执行。只对外部脚本文件有效。
+    async：可选。表示脚本可以延迟到文档完全被解析和显示之后再执行。只对外部脚本文件有效。
     这个属性与 defer 属性类似，都用于改变处理脚本的行为。同样与 defer 类似，async 只适用于外部脚本文件，并告诉浏览器立即下载文件。但与 defer 不同的是，标记为 async 的脚本并不保证按照指定它们的先后顺序执行。
 
     延迟加载js的方式：
@@ -70,7 +77,7 @@
     7、class
     8、for of
     9、Proxy
-    10、Symble 判断是不是：typeof Symble === 'function' && Symble?.for
+    10、Symble 判断是不是Symble：typeof Symble === 'function' && Symble?.for
     11、async、await
 
 9、如何实现一个深拷贝
@@ -278,19 +285,21 @@
         js对象是通过new操作符构建出来的，所以对象之间不相等，除了引用同一个对象之外；
         对象的key都是字符串类型
         console.log([1] == [1]) // false
+        console.log([1] == '1') // true --> 有隐式转换【对于数组而言，隐式转换调用 toString()，相当于执行了 join()】
         console.log({a:1} == {a:1}) // false
 
 28、闭包？
     优点：
         1、函数外部可以访问到函数内部定义的变量；
         2、封装局部变量；节流、防抖；
-        3、结合自调用函数做数据隔离
+        3、结合自调用函数做数据隔离；
+        4、模块化封装；
     缺点：
         1、变量会留在内存中，造成内存损耗问题；
             解决：把闭包函数值设置为null
 
 29、js继承的方式有哪些？
-    1、原型链继承
+    1、原型链继承【所有实例共享父对象的属性，一个实例的修改会影响到其他实例；在子类实例对象创建时，不能向父类传参；】
         function Parent() {
             this.name = 'zhang'
         }
@@ -298,7 +307,24 @@
             this.age = 24
         }
         Child.prototype = new Parent()
-    2、使用 ES6 class extends 继承
+    2、借用构造函数继承【无法继承父类原型上的方法，每个实例都会创建一个副本；无法实现父类原型链上的方法复用】
+        function Parent() {
+            this.name = 'zhang'
+        }
+        function Child() {
+            Parent.call(this)
+            this.age = 24
+        }
+    3、组合式继承【无论什么情况下，父类构造函数都会被调用两次，一是创建子类原型对象时，二是子类构造函数内部。】
+        function Parent() {
+            this.name = 'zhang'
+        }
+        function Child() {
+            Parent.call(this)
+            this.age = 24
+        }
+        Child.prototype = new Parent()
+    4、使用 ES6 class extends 继承
         class Parent {
             constructor() {
                 this.name = 'zhang'
@@ -310,23 +336,6 @@
                 this.age = 24
             }
         }
-    3、借用构造函数继承【无法实现共享】
-        function Parent() {
-            this.name = 'zhang'
-        }
-        function Child() {
-            Parent.call(this)
-            this.age = 24
-        }
-    4、组合式继承
-        function Parent() {
-            this.name = 'zhang'
-        }
-        function Child() {
-            Parent.call(this)
-            this.age = 24
-        }
-        Child.prototype = new Parent()
 
 30、箭头函数和普通函数的区别？
     1、this指向问题：
@@ -359,3 +368,14 @@
         1. 对于依赖的模块，AMD 是提前执行，CMD 是延迟执行。不过 RequireJS 从 2.0 开始，也改成可以延迟执行（根据写法不同，处理方式不同）。CMD 推崇 as lazy as possible.
         2. CMD 推崇依赖就近，AMD 推崇依赖前置。
         3. AMD 的 API 默认是一个当多个用，CMD 的 API 严格区分，推崇职责单一。比如 AMD 里，require 分全局 require 和局部 require，都叫 require。CMD 里，没有全局 require，而是根据模块系统的完备性，提供 seajs.use 来实现模块系统的加载启动。CMD 里，每个 API 都简单纯粹。
+
+35、a == 1 && a == 2 && a ==3 // true
+    涉及js中数据的隐式转换；valueOf()、toString()、join()等；
+    let a = {
+        value: 1,
+        valueOf: function() {
+            return this.value++
+        }
+    }
+    a == 1 && a == 2 && a ==3 // true
+    

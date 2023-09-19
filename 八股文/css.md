@@ -15,9 +15,10 @@
     行内样式
     ID选择器(#)
     类(.xxx)、属性(img[src='xxx.img'])、伪类(a:hover)
-    标签(p)
+    标签(p)、伪元素选择器
     通配符(*、>、+) 
     【注：从上到下依次递减】
+    【如果优先级一样，后面的会覆盖前面的，所以最终的效果是后面定义的。】
 
 3、CSS属性哪些可以继承？哪些不可以继承？
     CSS的三大特性：层叠、继承、优先级
@@ -56,13 +57,14 @@
         }
 
 6、position的值有哪些，分别是根据什么定位的？
-    static：没有定位，正常的文档流；
+    static【sidatike】：没有定位，正常的文档流；
     relative：根据自身当前位置进行定位，不脱离文档流；
     fixed：固定，根据浏览器窗口定位，脱离文档流；
     absolute：根据不是static定位以外的第一个祖先元素进行定位，脱离文档流
+    sticky【sidaikei】：根据视口定位，在移动到视口到指定位置后固定
 
     relative 和 absolute的区别:
-        1、relative根据自身进行定位，absolute根据第一个部位 static 的祖先元素进行定位；
+        1、relative根据自身进行定位，absolute根据第一个不为 static 的祖先元素进行定位；
         2、relative 不脱离文档流，position会脱离文档流；
         3、relative 如果有 left、top、right、bottom ===> left、top
         absolute 如果有 left、top、right、bottom ===> left、top、right、bottom
@@ -86,7 +88,7 @@
         
 9、布局方案
     什么时候采用响应式布局：
-        用户量不是特别多、数据量比较少、纯展会类项目；
+        用户量不是特别多、数据量比较少、纯展示类项目；
             例如公司官网、专题页面
         特别追求性能的网站不适合使用响应式，因为如果添加了很多响应式就会造成加载速度变慢；
     pc + 移动端应该做什么样的布局方案；
