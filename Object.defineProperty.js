@@ -1,6 +1,6 @@
 // Object.defineProperty
 
-function rrender(){ console.log('模拟视图渲染')}
+function render(){ console.log('模拟视图渲染')}
 let obj = [1, 2, 3]
 let methods = ['pop', 'shift', 'unshift', 'sort', 'reverse', 'splice', 'push']
 // 先获取到原来的原型上的方法
@@ -22,7 +22,7 @@ function observer(obj) {
     }
     if (typeof obj == 'object') {
         for (let key in obj) {
-        defineReactive(obj, key, obj[key])
+            defineReactive(obj, key, obj[key])
         }
     }
 }
