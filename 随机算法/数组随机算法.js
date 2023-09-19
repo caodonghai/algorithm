@@ -19,3 +19,4 @@ function swap(arrs, i, randomIndex) {
 const myArrs = [1,43,5435,312,54,767,343,21,43,65,323,23,1,12,45]
 
 console.log(shuffle(myArrs));
+
