@@ -1,10 +1,10 @@
 1、盒模型？
     标准盒模型（content-box）：margin + border + padding + content
-        width = comtent + 2*border + 2*padding
-        占据页面大小 = comtent + 2*border + 2*padding + 2*margin
+        width = content + 2*border + 2*padding
+        占据页面大小 = content + 2*border + 2*padding + 2*margin
     怪异盒模型（border-box）：margin + content(包含border、padding)
-        width = comtent
-        占据页面大小 = comtent + 2*margin
+        width = content
+        占据页面大小 = content + 2*margin
 
 2、line-height 和 height的区别？
     height：行高；是一个死值，盒子的高度； 
