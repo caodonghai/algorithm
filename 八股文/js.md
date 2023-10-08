@@ -115,7 +115,7 @@
     原型上有：then、catch、finally
     有三种状态：pending、fulfilled、reject
     状态改变只有两种状态：pending--->fulfilled、pending--->reject，一旦发生，状态就不会再变
-    内部维护两个异步队列，fulfilledList  和rejectedList，在pending阶段将异步回调放入队列，在状态结果改变后分别执行队列里面的回调；
+    内部维护两个异步队列，fulfilledList 和 rejectedList，在pending阶段将异步回调放入队列，在状态结果改变后分别执行队列里面的回调；
     原理：
         构造一个Promise实例，实例需要传递一个函数作为参数，该函数包含两个参数，一个为resolve函数，一个为reject函数；
         在promise的then方法用于指定状态改变后的操作，resolve时执行成功队列，reject时执行失败队列；
@@ -126,7 +126,7 @@
         相同点：
             都用于处理JS异步
             都是非阻塞性的
-            async、await 是 Promise实现的
+            async、await 是 Promise 实现的
         不同点：
             Promise是返回对象，我们要用then、catch处理和捕获异常，支持链式调用；
             async、await是通过try、catch来捕获异常
@@ -177,12 +177,12 @@
     JWT 一般是这样一个字符串，分为三个部分，以 “.” 隔开：
         1、JWT 第一部分是头部分，它是一个描述 JWT 元数据的 Json 对象；
         2、JWT 第二部分是 Payload，也是一个 Json 对象，除了包含需要传递的数据，还有七个默认的字段供选择。
-        3、JWT 第三部分是签名。是这样生成的，首先需要指定一个 secret，该 secret 仅仅保存在服务器中，保证不能让其他用户知道。这个部分需要 base64URL 加密后的 header 和 base64URL 加密后的 payload 使用 . 连接组成的字符串，然后通过header 中声明的加密算法 进行加盐secret组合加密，然后就得出一个签名哈希，也就是Signature，且无法反向解密。
+        3、JWT 第三部分是签名。是这样生成的：首先需要指定一个 secret，该 secret 仅仅保存在服务器中，保证不能让其他用户知道。这个部分需要 base64URL 加密后的 header 和 base64URL 加密后的 payload 使用 . 连接组成的字符串，然后通过header 中声明的加密算法 进行加盐secret组合加密，然后就得出一个签名哈希，也就是Signature，且无法反向解密。
     JWT的认证流程：
         1、前端把账号密码发送给服务端
         2、后端核对账号密码成功后，把用户ID等信息作为JWT负载，把它和头部分别进行base64编码拼接后签名，形成一个JWT(Token);
         3、前端每次请求时会把JWT放在请求头部的Authorization字段内
-        4、后端检查是否存在，如果存在就验证JWT的有效性（签名是否正确，Token是否国过期）
+        4、后端检查是否存在，如果存在就验证JWT的有效性（签名是否正确，Token是否过期）
         5、验证通过后后端使用JWT中包含的用户信息进行其他操作并返回对应结果
     优点：
         1、json格式的通用性，所以JWT可以跨语言支持，比如Java、JavaScript、PHP、Node等等。
@@ -196,7 +196,7 @@
     详解：https://blog.csdn.net/weixin_45410366/article/details/125031959
 
 18、输入以URL后会发生什么？
-
+    见![http.md](./http.md)
 
 19、SVG 和 canvas 有什么区别，使用场景？
     区别：svg是基于XML语法格式的图像，是矢量图，放大不失真；svg是对图像形状的描述，本质是文本文件，体积小；
@@ -237,6 +237,55 @@
             http:1.1：请求头：if-none-match 响应头：Etag
 
 23、大文件上传怎么做？
+    ![](https://zhuanlan.zhihu.com/p/444704253?utm_source=wechat_timeline&utm_medium=social&utm_oi=789262422627225600&utm_campaign=shareopn)
+    ![大文件分片上传代码](../大文件分片上传.ts)
+    1、首先，前端对大文件进行分片，规避超时问题
+        因为File对象是继承Blob对象的，所以我们可以用 Blob.prototype.slice 对文件进行切片
+        // 切片大小，先定为10M
+        const SLICE_SIZE = 10 * 1024 * 1024;
+        const createFileSlices: (file: File) => Blob[] = (file: File) => {
+            if (!file) return [];
+            const slices = [];
+            let start = 0;
+            while (start < file.size) {
+            const slice = file.slice(start, start + SLICE_SIZE)
+            slices.push(slice)
+            start += SLICE_SIZE
+            }
+
+            return slices;
+        };
+    2、前端对文件生成hash值，用于标识文件的唯一性，使用 md5-wasm 生成文件摘要用来标识唯一性,计算文件hash值
+        // wasm计算文件hash值
+        const calculateFileHashWasm: (file: File) => Promise<string> = (file) => {
+            return new Promise((resolve, reject) => {
+            try {
+                const reader = new FileReader()
+                reader.readAsArrayBuffer(file)
+                reader.onload = (event: any) => {
+                const buffer = event.target.result;
+                md5WASM(buffer).then((res: string) => {
+                    resolve(res);
+                }).catch(() => {
+                    reject('');
+                });
+                }
+            } catch (e) {
+                reject(e)
+            }
+            })
+        };
+    3、发送 check 请求，根据文件名和hash值判断文件是否存在或者切片是否已经上传了部分
+    4、组装分片包
+    5、发送 upload 请求 上传分片包
+    6、服务端根据hash值生成临时目录存放切片
+    7、切片上传完成之后，前端发送 merge 请求，提示后端合成文件
+    8、后端合成文件
+    9、上传完成
+    10、断点续传
+        续传实际上就是判断服务端已存在的分片包，前端拿到之后将已经有的分片包从所有分片包中移除出去
+        断点无非就是两种情况，退出浏览器被动断开或者点击暂停手动断开，退出浏览器，xhr请求就会abort所以我们不需要管。
+        所以手动暂停的时候，我们就需要手动调用一下每个upload的abort了，因为我用的ajax库是axios，在axios里是利用cancelToken 和 cancel来abort请求
 
 24、null 和 undefined 的区别？
     1、typeof 检测：null为对象，undefined 的为undefined；
@@ -246,9 +295,9 @@
 24、'==' 和 '===' 的区别？
     '=='：比较的是原始值：
         string == number || boolen || ...都会做隐式转换
-        通过valueOf转换（valueOf()通常由js在后台自动调用，并不显示在代码中）
+        通过valueOf转换【valueOf()通常由js在后台自动调用，并不显示在代码中】
     '==='：除了比较值，还比较类型：
-    【注：对于复杂数据类型，如果引用地址不同，那么比较都是false；】
+    【注：对于复杂数据类型，如果引用地址不同，那么比较都是false】
 
 25：js的EventLoop?
     1、js是单线程的语言
@@ -307,7 +356,7 @@
             this.age = 24
         }
         Child.prototype = new Parent()
-    2、借用构造函数继承【无法继承父类原型上的方法，每个实例都会创建一个副本；无法实现父类原型链上的方法复用】
+    2、借用构造函数继承【无法继承父类原型上的方法，每个实例都会创建一个副本；无法实现父类原型链[Parent.prototype.xxx]上方法的复用】
         function Parent() {
             this.name = 'zhang'
         }
@@ -339,7 +388,7 @@
 
 30、箭头函数和普通函数的区别？
     1、this指向问题：
-        箭头函数中的this只在函数定义时就决定的，而且是不可修改的(call、apply、bind)；
+        箭头函数中的this只在函数定义时就决定了，而且是不可修改的(call、apply、bind)；
         箭头函数的this指向它在定义时外层第一个【普通函数的this】；
     2、箭头函数不能作为构造函数使用；
     3、箭头函数没有arguments；
