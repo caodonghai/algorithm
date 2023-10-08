@@ -21,16 +21,13 @@
         2、增加了媒体查询
         3、文字阴影
         4、边框
-        5、盒子模型：box-sizeing
+        5、盒子模型：box-sizing
         6、渐变
-        7、过度
+        7、过渡
         8、自定义动画
         9、2D、3D
-    
-3、rem是如何做适配的？
 
-
-4、解决了那些移动端兼容性问题？
+3、解决了那些移动端兼容性问题？
     1、当设置overflow：scroll、auto时，IOS上会卡顿
         解决：-webkit-overflow-scrolling：touch
     2、

@@ -1,10 +1,10 @@
 1、盒模型？
     标准盒模型（content-box）：margin + border + padding + content
-        width = comtent + 2*border + 2*padding
-        占据页面大小 = comtent + 2*border + 2*padding + 2*margin
+        width = content + 2*border + 2*padding
+        占据页面大小 = content + 2*border + 2*padding + 2*margin
     怪异盒模型（border-box）：margin + content(包含border、padding)
-        width = comtent
-        占据页面大小 = comtent + 2*margin
+        width = content
+        占据页面大小 = content + 2*margin
 
 2、line-height 和 height的区别？
     height：行高；是一个死值，盒子的高度； 
@@ -57,11 +57,11 @@
         }
 
 6、position的值有哪些，分别是根据什么定位的？
-    static【sidatike】：没有定位，正常的文档流；
+    static【读音：sidatike】：没有定位，正常的文档流；
     relative：根据自身当前位置进行定位，不脱离文档流；
     fixed：固定，根据浏览器窗口定位，脱离文档流；
     absolute：根据不是static定位以外的第一个祖先元素进行定位，脱离文档流
-    sticky【sidaikei】：根据视口定位，在移动到视口到指定位置后固定
+    sticky【读音：sidaikei】：根据视口定位，在移动到视口到指定位置后固定
 
     relative 和 absolute的区别:
         1、relative根据自身进行定位，absolute根据第一个不为 static 的祖先元素进行定位；
@@ -96,3 +96,23 @@
         
         pc是一套，会加入一点点响应式。
         移动端是一套，使用自适应布局；
+     
+10、rem是如何做适配的？
+
+11、html上的基准font-size大小是如何计算的？
+    rem根据html元素font-size属性换算，浏览器默认html的font-size:16px,即1rem = 16px
+    假设设置屏幕宽度为7.5rem
+    适配750px屏幕：
+    html{ font-size:625% }
+    原理：750 / 7.5 = 100，即需要设置1rem = 100px;100 / 16 = 625%;
+    等式 16px * 625% = 100px;
+    所以，设置html字体为625%；即可rem适配
+    最后设置需要适配的屏幕宽度@media screen，设置html字体百分比，即可适配
+    计算百分比公式：fontSize（%） = 待适配屏幕宽度 / 物理分辨率(设计稿的宽度) * 基准fontSize / 16
+        document.documentElement.style.fontSize = document.documentElement.clientWidth / 750 * 100 / 16 * 100 + '%'
+    计算px公式：fontSize（px） = 待适配屏幕宽度 / 物理分辨率(设计稿的宽度) * 基准fontSize
+        document.documentElement.style.fontSize = document.documentElement.clientWidth / 750 * 100 + 'px'
+    此时有一个问题，因为我们设置了 html 根节点元素的 fontSize 为 100px ，就会导致子节点( div 等)的 fontSize 继承了 html 的 fontSize，导致字体非常大，需要每一次都要修改子节点的 fontSize，所以了为了方便，我们一般会在 body 标签下重新设置 fontSize ，用于子节点继承fontSize，就不需要每个字节都设置fontSize
+        body{
+            font-size: 16px;  
+        }
