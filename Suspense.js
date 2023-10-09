@@ -8,4 +8,5 @@ function createFetcher () {
 }
 
 class MySusponse extends React.Component{
+    
 }
